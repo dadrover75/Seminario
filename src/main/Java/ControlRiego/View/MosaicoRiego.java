@@ -3,7 +3,6 @@ package ControlRiego.View;
 import ControlRiego.Controller.ControlRiegoControl;
 
 import javax.swing.*;
-import java.awt.event.ItemListener;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,9 +11,9 @@ public class MosaicoRiego extends JFrame {
     private JRadioButton bomba;
     private JPanel contenedor;
     private JPanel card;
-    private DefaultListModel<String> sensoresModel;
     private ControlRiegoControl controlRiegoControl;
-    private Map<String, Integer> sensorValues;
+    private final DefaultListModel<String> sensoresModel;
+    private final Map<String, Integer> sensorValues;
 
     public MosaicoRiego(ControlRiegoControl controlRiegoControl) {
         this.controlRiegoControl = controlRiegoControl;
@@ -27,9 +26,6 @@ public class MosaicoRiego extends JFrame {
         this.pack();
         this.setVisible(true);
 
-        bomba.addItemListener(e -> {
-            boolean selected = bomba.isSelected();
-        });
     }
 
     public void setControlRiegoControl(ControlRiegoControl controlRiegoControl) {
