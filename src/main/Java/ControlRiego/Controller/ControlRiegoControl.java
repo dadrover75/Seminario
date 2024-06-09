@@ -2,6 +2,7 @@ package ControlRiego.Controller;
 
 import Comunication.ConnMQTT.IMqttConnection;
 import ControlRiego.Model.ControlRiegoDAO;
+import ControlRiego.View.MosaicoRiego;
 import GestionRecursos.Controller.DispositivoControl;
 import GestionRecursos.Model.Dispositivo.Ent.Dispositivo;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -16,9 +17,13 @@ public class ControlRiegoControl {
         private final IMqttConnection mqttConnection;
         private ControlRiegoDAO controlRiegoDAO = new ControlRiegoDAO();
         private DispositivoControl dispositivoControl = new DispositivoControl();
+        private MosaicoRiego mosaicoRiego;
 
-        public ControlRiegoControl(IMqttConnection mqttConnection) {
+        public ControlRiegoControl(IMqttConnection mqttConnection, MosaicoRiego mosaicoRiego) {
+
             this.mqttConnection = mqttConnection;
+            this.mosaicoRiego = mosaicoRiego;
+
         }
 
         public void initialize() {
@@ -36,10 +41,11 @@ public class ControlRiegoControl {
             System.out.println("Mensaje recibido en " + topic + ": " + payload);
 
             if (topic.contains("sensor/humidity")){
-                // TODO actualizar en pantalla
+
                 String datoLimpio = String.valueOf(payload).replaceAll("\\s", "");
                 try {
                     int humidity = Integer.parseInt(datoLimpio);
+                    mosaicoRiego.updateSensorValue(topic, humidity);
                     if (humidity < infoMap.get("humedad_min")) {
                         encenderRiego(topic);
                     }
@@ -50,10 +56,11 @@ public class ControlRiegoControl {
             }
 
             if (topic.contains("actuator/waterpump")) {
-                // TODO actualizar en pantalla
+
                 try {
                     int estado = dispositivoControl.estadoDispositivo(topic);
                     int nuevoEstado = Integer.parseInt(payload);
+                    mosaicoRiego.updatePumpState(topic, nuevoEstado);
                     if (nuevoEstado != estado) {
                         dispositivoControl.cambiarEstadoBomba(topic);
                     }
@@ -73,10 +80,11 @@ public class ControlRiegoControl {
                 System.out.println("Activando el riego...");
                 mqttConnection.publish(topicBomba, "1");
                 dispositivoControl.cambiarEstadoBomba(topicBomba);
-                // TODO actualizar en pantalla
+                mosaicoRiego.updatePumpState(topicBomba, 1);
                 CompletableFuture.delayedExecutor(tiempo, TimeUnit.SECONDS).execute(() -> { // TODO cambiar el tiempo por minutos despues de pruebas
                     apagarRiego(topicBomba);
                     dispositivoControl.cambiarEstadoBomba(topicBomba);
+                    mosaicoRiego.updatePumpState(topicBomba, 0);
                 });
             }
         }
@@ -88,7 +96,6 @@ public class ControlRiegoControl {
                 System.out.println("Se completo el ciclo de riego! \nApagando el riego...");
                 mqttConnection.publish(topic, "0");
                 dispositivoControl.cambiarEstadoBomba(topic);
-                // TODO actualizar en pantalla
             }
         }
 
