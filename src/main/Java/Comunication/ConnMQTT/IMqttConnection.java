@@ -6,5 +6,5 @@ public interface IMqttConnection {
     void disconnect();
     void publish(String topic, String message);
     void subscribe(String topic);
-
+    void setMessageListener(MqttSingleton.MessageListener messageListener);
 }

@@ -99,6 +99,46 @@ public class  DispositivoDAO implements DAO<Dispositivo> {
 
     }
 
+    public Dispositivo getSensorsByCultivo (int idCultivo) {
+        Dispositivo dispositivo = null;
+        String sql = "SELECT d.iddispositivos, d.topic, d.estado, cd.idcultivos " +
+                "FROM dispositivos d JOIN cultivos_dispositivos cd ON d.iddispositivos = cd.iddispositivos " +
+                "WHERE cd.idcultivos = ? AND d.topic LIKE \"%sensor%\";";
+        try (Connection conn = DataBaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql))
+        {
+            stmt.setInt(1, idCultivo);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    dispositivo = crearDispositivo(rs);
+                }
+            }
+        } catch (SQLException ex) {
+            System.out.println("SQLException: " + ex.getMessage());
+        }
+        return dispositivo;
+    }
+
+    public Dispositivo getBombaByCultivo (int id) {
+        Dispositivo dispositivo = null;
+        String sql = "SELECT d.iddispositivos, d.topic, d.estado, cd.idcultivos " +
+                "FROM dispositivos d JOIN cultivos_dispositivos cd ON d.iddispositivos = cd.iddispositivos " +
+                "WHERE cd.idcultivos = ? AND d.topic LIKE \"%actuator%\"" +
+                "LIMIT 1;";
+        try (Connection conn = DataBaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql))
+        {
+            stmt.setInt(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    dispositivo = crearDispositivo(rs);
+                }
+            }
+        } catch (SQLException ex) {
+            System.out.println("SQLException: " + ex.getMessage());
+        }
+        return dispositivo;
+    }
 
     public List<Dispositivo> getAll() {
 

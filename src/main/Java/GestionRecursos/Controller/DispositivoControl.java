@@ -30,6 +30,10 @@ public class DispositivoControl {
         return dispositivoDAO.getAll();
     }
 
+    public Dispositivo getSensorEsByCultivo( int id ) { return dispositivoDAO.getSensorsByCultivo(id); }
+
+    public Dispositivo buscarBombasPorCultivo(int id) { return dispositivoDAO.getBombaByCultivo(id); }
+
     public Dispositivo buscarDispositivoPorTopic(String topic) { return dispositivoDAO.getByTopic(topic); }
 
     public Integer estadoDispositivo(String topic){ return buscarDispositivoPorTopic(topic).getEstado(); }

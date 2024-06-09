@@ -87,6 +87,7 @@ public class MqttSingleton implements IMqttConnection {
 
     }
 
+    @Override
     public void setMessageListener(MessageListener messageListener) {
         this.messageListener = messageListener;
     }

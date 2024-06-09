@@ -2,6 +2,7 @@ package ControlRiego.Controller;
 
 import Comunication.ConnMQTT.IMqttConnection;
 import ControlRiego.Model.ControlRiegoDAO;
+import ControlRiego.View.CultivoPanel;
 import GestionRecursos.Controller.DispositivoControl;
 import GestionRecursos.Model.Dispositivo.Ent.Dispositivo;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -16,9 +17,11 @@ public class ControlRiegoControl {
         private final IMqttConnection mqttConnection;
         private ControlRiegoDAO controlRiegoDAO = new ControlRiegoDAO();
         private DispositivoControl dispositivoControl = new DispositivoControl();
+        private final List<CultivoPanel> cultivoPanels;
 
-        public ControlRiegoControl(IMqttConnection mqttConnection) {
+        public ControlRiegoControl(IMqttConnection mqttConnection, List<CultivoPanel> cultivoPaneles) {
             this.mqttConnection = mqttConnection;
+            this.cultivoPanels = cultivoPaneles;
         }
 
         public void initialize() {
@@ -36,10 +39,25 @@ public class ControlRiegoControl {
             System.out.println("Mensaje recibido en " + topic + ": " + payload);
 
             if (topic.contains("sensor/humidity")){
-                // TODO actualizar en pantalla
+
+                int idCultivo = infoMap.get("id_cultivo");
+                Dispositivo sensor = dispositivoControl.getSensorEsByCultivo(idCultivo);
+                Dispositivo bomba = dispositivoControl.buscarBombasPorCultivo(idCultivo);
+
                 String datoLimpio = String.valueOf(payload).replaceAll("\\s", "");
                 try {
                     int humidity = Integer.parseInt(datoLimpio);
+                    for (CultivoPanel panel : cultivoPanels) {
+
+                            if (topic.equals(sensor.getTopic())) {
+                                panel.setHumidity(humidity);
+                            }
+
+                        /*if (topic.equals(panel.getPumpTopic())) {
+                            panel.setHumidity(humidity);
+                        }*/
+                    }
+
                     if (humidity < infoMap.get("humedad_min")) {
                         encenderRiego(topic);
                     }
@@ -50,12 +68,17 @@ public class ControlRiegoControl {
             }
 
             if (topic.contains("actuator/waterpump")) {
-                // TODO actualizar en pantalla
+
                 try {
                     int estado = dispositivoControl.estadoDispositivo(topic);
                     int nuevoEstado = Integer.parseInt(payload);
                     if (nuevoEstado != estado) {
                         dispositivoControl.cambiarEstadoBomba(topic);
+                    }
+                    for (CultivoPanel panel : cultivoPanels) {
+                        if (topic.equals(panel.getPumpTopic())) {
+                            panel.setPumpState(nuevoEstado == 1);
+                        }
                     }
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
