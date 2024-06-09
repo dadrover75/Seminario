@@ -1,15 +1,20 @@
 package ControlRiego.Controller;
 
 import Comunication.ConnMQTT.IMqttConnection;
+import ControlRiego.Model.ControlRiegoDAO;
+import GestionRecursos.Model.Dispositivo.DAO.DispositivoDAO;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 public class ControlRiegoControl {
 
         private final IMqttConnection mqttConnection;
+        private ControlRiegoDAO controlRiegoDAO = new ControlRiegoDAO();
+        private DispositivoDAO dispositivoDAO = new DispositivoDAO();
 
         public ControlRiegoControl(IMqttConnection mqttConnection) {
             this.mqttConnection = mqttConnection;
@@ -23,10 +28,11 @@ public class ControlRiegoControl {
         public void handleMessage(String topic, MqttMessage message) {
             String payload = new String(message.getPayload());
             System.out.println("Mensaje recibido en " + topic + ": " + payload);
+            int humedad_min = configCultivo(topic).get("humedad_min");
 
             try {
                 int humidity = Integer.parseInt(payload);
-                if (humidity < 30) { // TODO buscar valor min o max en configuracion del cultivo
+                if (humidity < humedad_min) {
                     encenderRiego();
                 }
             } catch (NumberFormatException e) {
@@ -41,13 +47,23 @@ public class ControlRiegoControl {
             System.out.println("Activando el riego...");
             mqttConnection.publish("actuator/waterpump/1", "on");
             CompletableFuture.delayedExecutor(5, TimeUnit.SECONDS).execute(() -> {
-                apagarRiego(); // TODO cambiar el tiempo por el tiempo de riego de la configuracion del cultivo
+                apagarRiego(); // TODO cambiar el tiempo por minutos despues de pruebas
             });
         }
 
         private void apagarRiego() {
-            System.out.println("Desactivando el riego...");
+            System.out.println("Se completo el ciclo de riego \n \tApagando el riego..");
             mqttConnection.publish("actuator/waterpump/1", "off");
         }
+
+        private Map<String, Integer> configCultivo(String topic) {
+
+            String topicSensor = topic;
+            Map<String, Integer> infoCultivo = controlRiegoDAO.getInfoCultivo(topicSensor);
+
+            return infoCultivo;
+
+        }
+
     }
 

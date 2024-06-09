@@ -1,4 +1,4 @@
-package ControlRiego.Model;
+package ControlRiego.View;
 
 public class MosaicoRiego {
 }
