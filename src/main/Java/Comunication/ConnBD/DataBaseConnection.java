@@ -19,6 +19,7 @@ public class DataBaseConnection implements DatabaseConnectionManager {
 
 
     public static void closeConnection() throws SQLException {
+
         if (connection != null && !connection.isClosed()) {
             connection.close();
         }

@@ -26,6 +26,7 @@ public class ControlRiegoControl {
 
         }
 
+        // Inicializar la vista y el seteamos el controlador
         public void initialize() {
 
             List<Dispositivo> dispositivos = dispositivoControl.listarDispositivo();
@@ -33,8 +34,10 @@ public class ControlRiegoControl {
 
         }
 
+        // Manejar los mensajes recibidos
         public void handleMessage(String topic, MqttMessage message) {
 
+            // Obtener el payload del mensaje y la informacion del cultivo
             String payload = new String(message.getPayload());
             Map<String, Integer> infoMap = configCultivo(topic);
 
@@ -45,7 +48,11 @@ public class ControlRiegoControl {
                 String datoLimpio = String.valueOf(payload).replaceAll("\\s", "");
                 try {
                     int humidity = Integer.parseInt(datoLimpio);
+
+                    // Actualizar la vista con el valor del sensor
                     mosaicoRiego.updateSensorValue(topic, humidity);
+
+                    // Encender el riego si la humedad es menor a la mínima configurada para el cultivo
                     if (humidity < infoMap.get("humedad_min")) {
                         encenderRiego(topic);
                     }
@@ -60,7 +67,11 @@ public class ControlRiegoControl {
                 try {
                     int estado = dispositivoControl.estadoDispositivo(topic);
                     int nuevoEstado = Integer.parseInt(payload);
+
+                    // Actualizar la vista con el estado de la bomba
                     mosaicoRiego.updatePumpState(topic, nuevoEstado);
+
+                    // Swith para cambiar el estado de la bomba
                     if (nuevoEstado != estado) {
                         dispositivoControl.cambiarEstadoBomba(topic);
                     }
@@ -71,6 +82,7 @@ public class ControlRiegoControl {
             }
         }
 
+        // Enciende la bomba de riego y la apaga después de un tiempo
         private void encenderRiego(String topic) {
             int tiempo = configCultivo(topic).get("minutos_riego");
             String topicBomba = controlRiegoDAO.getTopicBomba(topic);
@@ -81,6 +93,8 @@ public class ControlRiegoControl {
                 mqttConnection.publish(topicBomba, "1");
                 dispositivoControl.cambiarEstadoBomba(topicBomba);
                 mosaicoRiego.updatePumpState(topicBomba, 1);
+
+                // Apagar el riego después de un tiempo (para las pruebas se usaron segundos)
                 CompletableFuture.delayedExecutor(tiempo, TimeUnit.SECONDS).execute(() -> { // TODO cambiar el tiempo por minutos despues de pruebas
                     apagarRiego(topicBomba);
                     dispositivoControl.cambiarEstadoBomba(topicBomba);
@@ -89,6 +103,7 @@ public class ControlRiegoControl {
             }
         }
 
+        // Apaga la bomba de riego
         private void apagarRiego(String topic) {
 
             if ( dispositivoControl.estadoDispositivo(topic) == 1 ) {
@@ -99,6 +114,7 @@ public class ControlRiegoControl {
             }
         }
 
+        // Obtiene la configuración del cultivo segun su sensor
         private Map<String, Integer> configCultivo(String topic) {
 
             String topicSensor = topic;
