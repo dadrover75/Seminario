@@ -79,6 +79,26 @@ public class  DispositivoDAO implements DAO<Dispositivo> {
 
     }
 
+    public Dispositivo getByTopic(String topic) {
+
+        Dispositivo dispositivo = null;
+        String sql = "SELECT * FROM dispositivos WHERE topic = ?";
+        try (Connection conn = DataBaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql))
+        {
+            stmt.setString(1, topic);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    dispositivo = crearDispositivo(rs);
+                }
+            }
+        } catch (SQLException ex) {
+            System.out.println("SQLException: " + ex.getMessage());
+        }
+        return dispositivo;
+
+    }
+
 
     public List<Dispositivo> getAll() {
 
@@ -104,6 +124,34 @@ public class  DispositivoDAO implements DAO<Dispositivo> {
         return new Dispositivo(rs.getInt(1), rs.getString(2), rs.getInt(3));
 
     }
+
+    public int estadoBomba(String topic){
+
+        return getByTopic(topic).getEstado();
+
+    }
+
+    public void cambiarEstadoBomba(String topic){
+
+        if (topic.contains("actuator/waterpump")) {
+
+            int estado = (estadoBomba(topic) == 0) ? 1 : 0;
+            String sql = "UPDATE dispositivos SET estado = ? WHERE topic = ?;";
+
+            try (Connection conn = DataBaseConnection.getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(sql))
+            {
+                stmt.setInt(1, estado);
+                stmt.setString(2, topic);
+                stmt.executeUpdate();
+            } catch (SQLException ex) {
+                System.out.println("SQLException: " + ex.getMessage());
+            }
+
+        }
+
+    }
+
 
 }
 

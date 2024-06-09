@@ -17,11 +17,11 @@ public class Main {
         DispositivoControl disp = new DispositivoControl();
 
         // Prueba de listado de datos
-        usu.listarUsuario().forEach(u -> System.out.println( u.getId() + " | " + u.getNombre() + " | " + u.getRol()));
+        /*usu.listarUsuario().forEach(u -> System.out.println( u.getId() + " | " + u.getNombre() + " | " + u.getRol()));
         System.out.println("-------------------------------------------------");
         conf.listarConfiguracion().forEach(c -> System.out.println( c.getId() + " | " + c.getHumMin() + " | " + c.getHumMax() + "| " + c.getMinutosRiego()));
         System.out.println("-------------------------------------------------");
-        disp.listarDispositivo().forEach(d -> System.out.println( d.getId() + " | " + d.getTopic() + " | " + d.getEstado()));
+        disp.listarDispositivo().forEach(d -> System.out.println( d.getId() + " | " + d.getTopic() + " | " + d.getEstado()));*/
 
         //-------------------------------------------------------------------
 
@@ -32,6 +32,8 @@ public class Main {
         // Crear e inicializar el controlador de humedad
         ControlRiegoControl controlHumedad = new ControlRiegoControl(mqttConnection);
         controlHumedad.initialize();
+
+        System.out.println("-----------------------riego en accion--------------------------");
 
         // Configurar el listener para manejar mensajes
         mqttConnection.setMessageListener(controlHumedad::handleMessage);

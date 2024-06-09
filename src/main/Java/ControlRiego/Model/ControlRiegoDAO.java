@@ -11,9 +11,9 @@ import java.util.Map;
 
 public class ControlRiegoDAO {
 
-    public Map<String,Integer> getInfoCultivo(String topic){
+    public Map<String,Integer> getInfoRiego(String topic){
 
-        Map <String,Integer> infoCultivo = new HashMap<>();
+        Map <String,Integer> infoRiego = new HashMap<>();
         String sql  = "SELECT c.idcultivos, c.descripcion, conf.minutos_riego, conf.humedad_min, conf.humedad_max " +
                 "FROM dispositivos d JOIN cultivos_dispositivos cd ON d.iddispositivos = cd.iddispositivos " +
                 "JOIN cultivos c ON cd.idcultivos = c.idcultivos " +
@@ -26,57 +26,53 @@ public class ControlRiegoDAO {
             stmt.setString(1, topic);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    infoCultivo.put("idcultivos", rs.getInt("idcultivos"));
-                    infoCultivo.put("minutos_riego", rs.getInt("minutos_riego"));
-                    infoCultivo.put("humedad_min", rs.getInt("humedad_min"));
-                    infoCultivo.put("humedad_max", rs.getInt("humedad_max"));
+                    infoRiego.put("idcultivos", rs.getInt("idcultivos"));
+                    infoRiego.put("minutos_riego", rs.getInt("minutos_riego"));
+                    infoRiego.put("humedad_min", rs.getInt("humedad_min"));
+                    infoRiego.put("humedad_max", rs.getInt("humedad_max"));
                 }
             }
         } catch (SQLException ex) {
             System.out.println("SQLException: " + ex.getMessage());
         }
 
-        return infoCultivo;
+        return infoRiego;
 
     }
 
-    public int estadoBomba(String topic){
+    public String getTopicBomba(String topicSensor){
 
-        int estado = 0;
-        String sql = "SELECT estado FROM dispositivos WHERE topic = ?;";
+        String topicBomba = null;
+        String sql = "SELECT d.topic " +
+                "FROM dispositivos d JOIN cultivos_dispositivos cd ON d.iddispositivos = cd.iddispositivos " +
+                "JOIN cultivos c ON cd.idcultivos = c.idcultivos " +
+                "JOIN configuraciones conf ON c.idconfiguraciones = conf.idconfiguraciones " +
+                "WHERE d.topic LIKE \"%actuator%\" " +
+                "AND c.idcultivos = ( " +
+                "SELECT idcultivos FROM ( " +
+                "SELECT c.idcultivos, c.descripcion, conf.minutos_riego, conf.humedad_min, conf.humedad_max " +
+                "FROM dispositivos d JOIN cultivos_dispositivos cd ON d.iddispositivos = cd.iddispositivos " +
+                "JOIN cultivos c ON cd.idcultivos = c.idcultivos " +
+                "JOIN configuraciones conf ON c.idconfiguraciones = conf.idconfiguraciones " +
+                "WHERE d.topic = ?) " +
+                "AS RESULTADO);";
 
         try (Connection conn = DataBaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql))
         {
-            stmt.setString(1, topic);
+            stmt.setString(1, topicSensor);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    estado = rs.getInt("estado");
+                    topicBomba = rs.getString("topic");
                 }
             }
         } catch (SQLException ex) {
             System.out.println("SQLException: " + ex.getMessage());
         }
 
-        return estado;
+        return topicBomba;
 
     }
 
-    public void cambiarEstadoBomba(String topic){
-
-        int estado = (estadoBomba(topic) == 0) ? 1 : 0;
-        String sql = "UPDATE dispositivos SET estado = ? WHERE topic = ?;";
-
-        try (Connection conn = DataBaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql))
-        {
-            stmt.setInt(1, estado);
-            stmt.setString(2, topic);
-            stmt.executeUpdate();
-        } catch (SQLException ex) {
-            System.out.println("SQLException: " + ex.getMessage());
-        }
-
-    }
 
 }

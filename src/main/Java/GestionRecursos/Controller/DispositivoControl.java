@@ -8,7 +8,7 @@ import java.util.List;
 
 public class DispositivoControl {
 
-    private DAO<Dispositivo> dispositivoDAO = new DispositivoDAO();
+    private DispositivoDAO dispositivoDAO = new DispositivoDAO();
 
     public void crearDispositivo(Dispositivo dispositivo) {
         dispositivoDAO.insert(dispositivo);
@@ -29,5 +29,11 @@ public class DispositivoControl {
     public List<Dispositivo> listarDispositivo() {
         return dispositivoDAO.getAll();
     }
+
+    public Dispositivo buscarDispositivoPorTopic(String topic) { return dispositivoDAO.getByTopic(topic); }
+
+    public Integer estadoDispositivo(String topic){ return buscarDispositivoPorTopic(topic).getEstado(); }
+
+    public void cambiarEstadoBomba(String topic) { dispositivoDAO.cambiarEstadoBomba(topic); }
 
 }
