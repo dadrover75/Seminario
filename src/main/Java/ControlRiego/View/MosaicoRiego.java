@@ -43,6 +43,6 @@ public class MosaicoRiego extends JFrame {
 
     private void updateSensorList() {
         sensoresModel.clear();
-        sensorValues.forEach((topic, value) -> sensoresModel.addElement(topic + " \t\t " + value));
+        sensorValues.forEach((topic, value) -> sensoresModel.addElement(topic + " ---------- " + value));
     }
 }
