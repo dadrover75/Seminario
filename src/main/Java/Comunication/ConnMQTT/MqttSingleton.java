@@ -8,7 +8,7 @@ public class MqttSingleton implements IMqttConnection {
     private static MqttSingleton instance = null;
     private IMqttClient client;
     private MessageListener messageListener;
-    private String brokerUrl = "tcp://test.mosquitto.org:1883";
+    private String brokerUrl = "tcp://broker.hivemq.com:1883";
     private String clientId = "javaClient";
 
 
