@@ -15,8 +15,8 @@ public class MosaicoRiego extends JFrame {
     private final DefaultListModel<String> sensoresModel;
     private final Map<String, Integer> sensorValues;
 
-    public MosaicoRiego(ControlRiegoControl controlRiegoControl) {
-        this.controlRiegoControl = controlRiegoControl;
+    public MosaicoRiego() {
+        //this.controlRiegoControl = controlRiegoControl;
         this.sensorValues = new HashMap<>();
         this.sensoresModel = new DefaultListModel<>();
         this.sensores.setModel(sensoresModel);
