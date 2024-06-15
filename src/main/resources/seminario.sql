@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `seminario` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `seminario`;
 -- MySQL dump 10.13  Distrib 8.0.31, for Win64 (x86_64)
 --
 -- Host: localhost    Database: seminario
@@ -96,7 +94,7 @@ CREATE TABLE `cultivos_dispositivos` (
 
 LOCK TABLES `cultivos_dispositivos` WRITE;
 /*!40000 ALTER TABLE `cultivos_dispositivos` DISABLE KEYS */;
-INSERT INTO `cultivos_dispositivos` VALUES (1,1),(1,2),(2,3),(3,4),(3,5),(4,6),(1,7),(3,8);
+INSERT INTO `cultivos_dispositivos` VALUES (1,1),(1,2),(1,3),(2,4),(2,5),(2,6),(2,7),(3,8),(3,9);
 /*!40000 ALTER TABLE `cultivos_dispositivos` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -121,8 +119,33 @@ CREATE TABLE `dispositivos` (
 
 LOCK TABLES `dispositivos` WRITE;
 /*!40000 ALTER TABLE `dispositivos` DISABLE KEYS */;
-INSERT INTO `dispositivos` VALUES (1,'sensor/humidity/1',0),(2,'sensor/humidity/2',0),(3,'actuator/waterpump/1',1),(4,'{sensor/humidity/3',0),(5,'sensor/humidity/4',0),(6,'sensor/humidity/5',0),(7,'actuator/waterpump/2',1),(8,'actuator/waterpump/3',0),(9,'sensor/humidity/6',0);
+INSERT INTO `dispositivos` VALUES (1,'sensor/humidity/1',0),(2,'sensor/humidity/2',0),(3,'actuator/waterpump/1',1),(4,'sensor/humidity/3',0),(5,'sensor/humidity/4',0),(6,'sensor/humidity/5',0),(7,'actuator/waterpump/2',0),(8,'actuator/waterpump/3',1),(9,'sensor/humidity/6',0);
 /*!40000 ALTER TABLE `dispositivos` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `mensajes`
+--
+
+DROP TABLE IF EXISTS `mensajes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mensajes` (
+                            `idmensajes` int NOT NULL AUTO_INCREMENT,
+                            `topic` varchar(45) NOT NULL,
+                            `payload` varchar(45) NOT NULL,
+                            PRIMARY KEY (`idmensajes`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `mensajes`
+--
+
+LOCK TABLES `mensajes` WRITE;
+/*!40000 ALTER TABLE `mensajes` DISABLE KEYS */;
+INSERT INTO `mensajes` VALUES (7,'/sensor/humidity/1','75'),(8,'/sensor/humidity/2','55'),(9,'/actuator/waterpump/1','on'),(10,'/sensor/humidity/3','60'),(11,'/sensor/humidity/4','70'),(12,'/sensor/humidity/5','65'),(13,'/actuator/waterpump/2','on'),(14,'/actuator/waterpump/3','off'),(15,'/sensor/humidity/6','60');
+/*!40000 ALTER TABLE `mensajes` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -186,4 +209,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-05-19 22:16:18
+-- Dump completed on 2024-06-15 15:07:07

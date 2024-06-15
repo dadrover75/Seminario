@@ -87,6 +87,11 @@ public class ControlRiegoControl {
             int tiempo = configCultivo(topic).get("minutos_riego");
             String topicBomba = controlRiegoDAO.getTopicBomba(topic);
 
+            if(topicBomba == null) {
+                System.out.println("No se encontro la bomba asociada al sensor");
+                return;
+            }
+
             if ( dispositivoControl.estadoDispositivo(topic) == 0 ) {
 
                 System.out.println("Activando el riego...");
