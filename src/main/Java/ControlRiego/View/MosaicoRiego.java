@@ -30,8 +30,8 @@ public class MosaicoRiego extends JFrame {
         this.card = new JPanel(new CardLayout());
         
         // Configurar el layout y agregar los componentes al panel contenedor
-        contenedor.add(new JScrollPane(sensores), BorderLayout.CENTER);
-        contenedor.add(bomba, BorderLayout.CENTER);
+        contenedor.add(new JScrollPane(sensores), BorderLayout.WEST);
+        contenedor.add(bomba, BorderLayout.EAST);
 
         this.setContentPane(contenedor);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
