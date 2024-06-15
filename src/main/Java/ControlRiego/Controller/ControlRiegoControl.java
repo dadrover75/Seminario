@@ -53,8 +53,13 @@ public class ControlRiegoControl {
                     mosaicoRiego.updateSensorValue(topic, humidity);
 
                     // Encender el riego si la humedad es menor a la mínima configurada para el cultivo
-                    if (humidity < infoMap.get("humedad_min")) {
+                    if (    infoMap.size() != 0 &&
+                            humidity < infoMap.get("humedad_min")) {
                         encenderRiego(topic);
+                    } else if (infoMap.size() == 0){
+                        System.out.println("El sensor no esta asociado a ningun cultivo por ahora");
+                    } else {
+                        System.out.println("El cultivo no tiene informacion de humedad minima");
                     }
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
@@ -87,12 +92,11 @@ public class ControlRiegoControl {
             int tiempo = configCultivo(topic).get("minutos_riego");
             String topicBomba = controlRiegoDAO.getTopicBomba(topic);
 
-            if(topicBomba == null) {
-                System.out.println("No se encontro la bomba asociada al sensor");
-                return;
-            }
+            System.out.println("topicBomba: " + topicBomba);
 
-            if ( dispositivoControl.estadoDispositivo(topic) == 0 ) {
+            if(topicBomba == null) {
+                System.out.println("No se encontro la bomba asociada al sensor...");
+            } else if ( dispositivoControl.estadoDispositivo(topicBomba) == 0 ) {
 
                 System.out.println("Activando el riego...");
                 mqttConnection.publish(topicBomba, "1");
