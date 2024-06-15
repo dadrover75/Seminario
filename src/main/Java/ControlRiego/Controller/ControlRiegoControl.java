@@ -58,9 +58,8 @@ public class ControlRiegoControl {
                         encenderRiego(topic);
                     } else if (infoMap.size() == 0){
                         System.out.println("El sensor no esta asociado a ningun cultivo por ahora");
-                    } else {
-                        System.out.println("El cultivo no tiene informacion de humedad minima");
                     }
+
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
