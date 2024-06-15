@@ -3,6 +3,7 @@ package ControlRiego.View;
 import ControlRiego.Controller.ControlRiegoControl;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,11 +16,22 @@ public class MosaicoRiego extends JFrame {
     private final DefaultListModel<String> sensoresModel;
     private final Map<String, Integer> sensorValues;
 
-    public MosaicoRiego(ControlRiegoControl controlRiegoControl) {
-        this.controlRiegoControl = controlRiegoControl;
+    public MosaicoRiego(/*ControlRiegoControl controlRiegoControl*/) {
+        //this.controlRiegoControl = controlRiegoControl;
         this.sensorValues = new HashMap<>();
         this.sensoresModel = new DefaultListModel<>();
-        this.sensores.setModel(sensoresModel);
+        
+        // Inicializar los componentes
+        this.sensores = new JList<>(sensoresModel);
+        this.bomba = new JRadioButton("Bomba");
+        
+        // Crear el panel contenedor y agregar los componentes
+        this.contenedor = new JPanel(new BorderLayout());
+        this.card = new JPanel(new CardLayout());
+        
+        // Configurar el layout y agregar los componentes al panel contenedor
+        contenedor.add(new JScrollPane(sensores), BorderLayout.CENTER);
+        contenedor.add(bomba, BorderLayout.CENTER);
 
         this.setContentPane(contenedor);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -45,4 +57,5 @@ public class MosaicoRiego extends JFrame {
         sensoresModel.clear();
         sensorValues.forEach((topic, value) -> sensoresModel.addElement(topic + " ---------- " + value));
     }
+
 }
