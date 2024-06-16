@@ -2,13 +2,7 @@ package App.Controller;
 
 import Comunication.ConnMQTT.MqttSingleton;
 import ControlRiego.Controller.ControlRiegoControl;
-import ControlRiego.View.MosaicoRiego;
-import ControlRiego.View.MosaicoRiego;
-import GestionRecursos.Controller.ConfiguracionControl;
-import GestionRecursos.Controller.DispositivoControl;
-import GestionRecursos.Controller.UsuarioControl;
 
-import javax.swing.*;
 import java.sql.*;
 
 public class Main {

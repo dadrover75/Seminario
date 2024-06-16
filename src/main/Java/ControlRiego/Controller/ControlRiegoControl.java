@@ -4,14 +4,12 @@ import Comunication.ConnMQTT.IMqttConnection;
 import ControlRiego.Model.ControlRiegoDAO;
 import ControlRiego.View.ContenedorRiego;
 import ControlRiego.View.Mosaico;
-import ControlRiego.View.MosaicoRiego;
 import GestionRecursos.Controller.CultivoControl;
 import GestionRecursos.Controller.DispositivoControl;
 import GestionRecursos.Model.Cultivo.Ent.Cultivo;
 import GestionRecursos.Model.Dispositivo.Ent.Dispositivo;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
