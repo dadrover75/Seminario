@@ -83,11 +83,11 @@ public class CultivoDAO implements DAO<Cultivo> {
     public Cultivo getBy(String topic) {
 
         Cultivo cultivo = null;
-        String sql = "SELECT c.*" +
-                "FROM cultivos c" +
-                "JOIN cultivos_dispositivos cd ON c.idcultivos = cd.idcultivos" +
-                "JOIN dispositivos d ON cd.iddispositivos = d.iddispositivos" +
-                "WHERE d.topic = ?;";
+        String sql = "SELECT c.* " +
+                "FROM cultivos c " +
+                "JOIN cultivos_dispositivos cd ON c.idcultivos = cd.idcultivos " +
+                "JOIN dispositivos d ON cd.iddispositivos = d.iddispositivos " +
+                "WHERE d.topic = ?; ";
         try (Connection conn = DataBaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql))
         {

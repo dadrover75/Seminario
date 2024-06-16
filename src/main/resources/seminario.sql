@@ -42,7 +42,7 @@ CREATE TABLE `configuraciones` (
 
 LOCK TABLES `configuraciones` WRITE;
 /*!40000 ALTER TABLE `configuraciones` DISABLE KEYS */;
-INSERT INTO `configuraciones` VALUES (1,1,30,80,40),(2,2,20,75,35),(3,3,25,85,45),(4,1,30,80,40),(5,2,20,75,35),(6,3,25,85,45);
+INSERT INTO `configuraciones` VALUES (1,1,5,80,40),(2,2,5,75,35),(3,3,5,85,45),(4,1,5,80,40),(5,2,5,75,35),(6,3,5,85,45);
 /*!40000 ALTER TABLE `configuraciones` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -121,7 +121,7 @@ CREATE TABLE `dispositivos` (
 
 LOCK TABLES `dispositivos` WRITE;
 /*!40000 ALTER TABLE `dispositivos` DISABLE KEYS */;
-INSERT INTO `dispositivos` VALUES (1,'sensor/humidity/1',0),(2,'sensor/humidity/2',0),(3,'actuator/waterpump/1',1),(4,'{sensor/humidity/3',0),(5,'sensor/humidity/4',0),(6,'sensor/humidity/5',0),(7,'actuator/waterpump/2',1),(8,'actuator/waterpump/3',0),(9,'sensor/humidity/6',0);
+INSERT INTO `dispositivos` VALUES (1,'sensor/humidity/1',1),(2,'sensor/humidity/2',1),(3,'actuator/waterpump/1',0),(4,'{sensor/humidity/3',1),(5,'sensor/humidity/4',1),(6,'sensor/humidity/5',1),(7,'actuator/waterpump/2',0),(8,'actuator/waterpump/3',0),(9,'sensor/humidity/6',1);
 /*!40000 ALTER TABLE `dispositivos` ENABLE KEYS */;
 UNLOCK TABLES;
 

@@ -24,15 +24,10 @@ public class ControlRiegoControl {
     private List<Cultivo> cultivos = cultivoControl.listarCultivo();
     private List<Dispositivo> dispositivos;
     private ContenedorRiego contenedorRiego = new ContenedorRiego(cultivos, this);
-    //private MosaicoRiego mosaicoRiego = new MosaicoRiego();
-    ///////////////////////////////////// probar mosaico///////////////////////////////////////
-    //private List<Dispositivo> dispo = new ArrayList<>();
-    //private Mosaico mosaico = new Mosaico();
 
-    public ControlRiegoControl(IMqttConnection mqttConnection/*, MosaicoRiego mosaicoRiego*/) {
+    public ControlRiegoControl(IMqttConnection mqttConnection) {
 
         this.mqttConnection = mqttConnection;
-        //this.mosaicoRiego = mosaicoRiego;
 
     }
 
@@ -60,7 +55,6 @@ public class ControlRiegoControl {
                 int humidity = Integer.parseInt(datoLimpio);
 
                 // Actualizar la vista con el valor del sensor
-                //mosaicoRiego.updateSensorValue(topic, humidity);
                 int cultivoId = cultivoControl.buscarCultivoPorTopic(topic).getId();
                 Mosaico mosaico = contenedorRiego.getMosaicoByCultivoId(cultivoId);
                 if (mosaico != null){
@@ -87,7 +81,6 @@ public class ControlRiegoControl {
                 int nuevoEstado = Integer.parseInt(payload);
 
                 // Actualizar la vista con el estado de la bomba
-                //mosaicoRiego.updatePumpState(topic, nuevoEstado);
 
                 int cultivoId = cultivoControl.buscarCultivoPorTopic(topic).getId();
                 Mosaico mosaico = contenedorRiego.getMosaicoByCultivoId(cultivoId);

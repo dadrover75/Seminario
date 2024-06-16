@@ -22,7 +22,11 @@ public class ContenedorRiego extends JFrame {
 
         this.contenedor = new JPanel(new BorderLayout());
         this.tarjetaCultivos = new JPanel();
-        this.tarjetaCultivos.setLayout(new BoxLayout(tarjetaCultivos, BoxLayout.Y_AXIS));
+        tarjetaCultivos.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
+
+        //this.tarjetaCultivos.setLayout(new BoxLayout(tarjetaCultivos, BoxLayout.Y_AXIS));
+        tarjetaCultivos.setLayout(new GridLayout(0, 2, 30, 30));
+        tarjetaCultivos.setSize(300,200);
 
         contenedor.add(new JScrollPane(tarjetaCultivos), BorderLayout.CENTER);
 
@@ -37,6 +41,20 @@ public class ContenedorRiego extends JFrame {
     private void initializeCultivoList(List<Cultivo> cultivos, ControlRiegoControl controlRiegoControl) {
         for (Cultivo cultivo : cultivos) {
             List<Dispositivo> dispositivos = controlRiegoControl.listarDispCultivo(cultivo.getId());
+            List <Dispositivo> sensores = dispositivos.stream().filter(dispositivo -> dispositivo.getTopic().contains("sensor/humidity")).toList(); // Filtra dispo tipo sensor
+            Mosaico mosaico = new Mosaico(sensores);
+
+            // título y tamano del mosaico
+            JLabel titleLabel = new JLabel("Cultivo: " + cultivo.getDescripcion());
+            titleLabel.setFont(new Font("Sanserif", Font.BOLD, 20));
+            titleLabel.setForeground(Color.DARK_GRAY);
+            titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            mosaico.setPreferredSize(new Dimension(300, 200));
+            mosaico.add(titleLabel, BorderLayout.NORTH);
+
+            // Agregar el mosaico al contenedor de cultivos y guardar referencia
+            tarjetaCultivos.add(mosaico);
+            mosaicosMap.put(cultivo.getId(), mosaico);
         }
         tarjetaCultivos.revalidate();
         tarjetaCultivos.repaint();
@@ -46,23 +64,4 @@ public class ContenedorRiego extends JFrame {
         return mosaicosMap.get(idcultivo);
     }
 
-/*
-    private JPanel contenedor;
-    private JList<Mosaico> mosaico;
-
-    public ContenedorRiego(List<Cultivo> cultivos) {
-
-            this.contenedor = new JPanel(new BorderLayout());
-            this.tarjetaCultivos = new JList<>();
-
-            contenedor.add(new JScrollPane(tarjetaCultivos), BorderLayout.WEST);
-
-            this.setContentPane(contenedor);
-            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            this.pack();
-            this.setVisible(true);
-
-            //initializeCultivoList(cultivos);
-    }
-*/
 }
