@@ -7,7 +7,7 @@ correr la aplicacion
   publicar en el topico sensor/humidity/1 al 5 un valor por ejemplo de 10 si queremos ver que se prenda la bomba
   ver en la ventana de la aplicacion como cambia el estado de la bomba y actualiza lectura de humedad ]
 
-  *ACTUALIZACION 16/6*
+  **ACTUALIZACION 16/6**
   Se creo un script llamado TestDispositivos que genera mensajes con humedad ramdon a intervalos de 5 seg en 
   cada dispositivo, para simular las lecturas.
   En este momento para probar solo se necesita generar la base de datos con el 
