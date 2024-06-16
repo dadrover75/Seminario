@@ -38,4 +38,6 @@ public class DispositivoControl {
 
     public List<Dispositivo> listarDispCultivo(String topic) { return dispositivoDAO.getAllByCultivo(topic); }
 
+    public List<Dispositivo> listarDispCultivo(int id) { return dispositivoDAO.getAllByCultivoID(id); }
+
 }

@@ -26,7 +26,7 @@ public class MosaicoRiego extends JFrame {
     ///////////////////////////////////// probar mosaico///////////////////////////////////////
     private DispositivoControl dispositivoControl = new DispositivoControl();
     private List<Dispositivo> dispo = new ArrayList<>(dispositivoControl.listarDispCultivo("sensor/humidity/3"));
-    private Mosaico mosaico = new Mosaico(1, "sensor/humidity/3", 45, dispo);
+    private Mosaico mosaico = new Mosaico(dispo);
 
 
     public MosaicoRiego(/*ControlRiegoControl controlRiegoControl*/) {

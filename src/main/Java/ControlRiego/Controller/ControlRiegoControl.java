@@ -2,8 +2,10 @@ package ControlRiego.Controller;
 
 import Comunication.ConnMQTT.IMqttConnection;
 import ControlRiego.Model.ControlRiegoDAO;
+import ControlRiego.View.ContenedorRiego;
 import ControlRiego.View.Mosaico;
 import ControlRiego.View.MosaicoRiego;
+import GestionRecursos.Controller.CultivoControl;
 import GestionRecursos.Controller.DispositivoControl;
 import GestionRecursos.Model.Cultivo.Ent.Cultivo;
 import GestionRecursos.Model.Dispositivo.Ent.Dispositivo;
@@ -20,12 +22,14 @@ public class ControlRiegoControl {
     private final IMqttConnection mqttConnection;
     private ControlRiegoDAO controlRiegoDAO = new ControlRiegoDAO();
     private DispositivoControl dispositivoControl = new DispositivoControl();
-    private List<Cultivo> cultivos;
+    private CultivoControl cultivoControl = new CultivoControl();
+    private List<Cultivo> cultivos = cultivoControl.listarCultivo();
     private List<Dispositivo> dispositivos;
-    private MosaicoRiego mosaicoRiego = new MosaicoRiego();
+    private ContenedorRiego contenedorRiego = new ContenedorRiego(cultivos, this);
+    //private MosaicoRiego mosaicoRiego = new MosaicoRiego();
     ///////////////////////////////////// probar mosaico///////////////////////////////////////
-    private List<Dispositivo> dispo = new ArrayList<>(dispositivoControl.listarDispCultivo("sensor/humidity/3"));
-    private Mosaico mosaico = new Mosaico(1, "sensor/humidity/3", 45, dispo);
+    //private List<Dispositivo> dispo = new ArrayList<>();
+    //private Mosaico mosaico = new Mosaico();
 
     public ControlRiegoControl(IMqttConnection mqttConnection/*, MosaicoRiego mosaicoRiego*/) {
 
@@ -58,8 +62,12 @@ public class ControlRiegoControl {
                 int humidity = Integer.parseInt(datoLimpio);
 
                 // Actualizar la vista con el valor del sensor
-                mosaicoRiego.updateSensorValue(topic, humidity);
-                mosaico.updateSensorValue(topic, humidity);
+                //mosaicoRiego.updateSensorValue(topic, humidity);
+                int cultivoId = cultivoControl.buscarCultivoPorTopic(topic).getId();
+                Mosaico mosaico = contenedorRiego.getMosaicoByCultivoId(cultivoId);
+                if (mosaico != null){
+                    mosaico.updateSensorValue(topic, humidity);
+                }
                 // Encender el riego si la humedad es menor a la mínima configurada para el cultivo
                 if (    infoMap.size() != 0 &&
                         humidity < infoMap.get("humedad_min")) {
@@ -81,8 +89,13 @@ public class ControlRiegoControl {
                 int nuevoEstado = Integer.parseInt(payload);
 
                 // Actualizar la vista con el estado de la bomba
-                mosaicoRiego.updatePumpState(topic, nuevoEstado);
-                mosaico.updatePumpState(topic, nuevoEstado);
+                //mosaicoRiego.updatePumpState(topic, nuevoEstado);
+
+                int cultivoId = cultivoControl.buscarCultivoPorTopic(topic).getId();
+                Mosaico mosaico = contenedorRiego.getMosaicoByCultivoId(cultivoId);
+                if (mosaico != null){
+                    mosaico.updatePumpState(topic, nuevoEstado);
+                }
 
                 // Swith para cambiar el estado de la bomba
                 if (nuevoEstado != estado) {
@@ -106,16 +119,19 @@ public class ControlRiegoControl {
             System.out.println("No se encontro la bomba asociada al sensor...");
         } else if ( dispositivoControl.estadoDispositivo(topicBomba) == 0 ) {
 
+            int cultivoId = cultivoControl.buscarCultivoPorTopic(topic).getId();
+            Mosaico mosaico = contenedorRiego.getMosaicoByCultivoId(cultivoId);
+
             System.out.println("Activando el riego...");
             mqttConnection.publish(topicBomba, "1");
             dispositivoControl.cambiarEstadoBomba(topicBomba);
-            mosaicoRiego.updatePumpState(topicBomba, 1);
+            mosaico.updatePumpState(topicBomba, 1);
 
             // Apagar el riego después de un tiempo (para las pruebas se usaron segundos)
             CompletableFuture.delayedExecutor(tiempo, TimeUnit.SECONDS).execute(() -> { // TODO cambiar el tiempo por minutos despues de pruebas
                 apagarRiego(topicBomba);
                 dispositivoControl.cambiarEstadoBomba(topicBomba);
-                mosaicoRiego.updatePumpState(topicBomba, 0);
+                mosaico.updatePumpState(topicBomba, 0);
             });
         }
     }
@@ -144,6 +160,10 @@ public class ControlRiegoControl {
     // Consultar al controlador de dispositivos el cultivo al que pertenece el sensor
     public List<Dispositivo> listarDispCultivo(String topic) {
         return dispositivoControl.listarDispCultivo(topic);
+    }
+
+    public List<Dispositivo> listarDispCultivo(int id) {
+        return dispositivoControl.listarDispCultivo(id);
     }
 
 }

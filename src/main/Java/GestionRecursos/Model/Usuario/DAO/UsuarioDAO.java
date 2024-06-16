@@ -79,6 +79,11 @@ public class UsuarioDAO implements DAO<Usuario> {
 
     }
 
+    @Override
+    public Usuario getBy(String topic) {
+        return null;
+    }
+
 
     public List<Usuario> getAll() {
 

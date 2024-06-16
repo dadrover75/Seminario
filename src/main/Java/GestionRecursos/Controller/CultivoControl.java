@@ -3,7 +3,6 @@ package GestionRecursos.Controller;
 import GestionRecursos.Model.Cultivo.DAO.CultivoDAO;
 import GestionRecursos.Model.Cultivo.Ent.Cultivo;
 import GestionRecursos.Model.DAO;
-import GestionRecursos.Model.Dispositivo.Ent.Dispositivo;
 
 import java.util.List;
 
@@ -30,5 +29,7 @@ public class CultivoControl {
     public List<Cultivo> listarCultivo() {
         return cultivoDAO.getAll();
     }
+
+    public Cultivo buscarCultivoPorTopic(String topic) { return cultivoDAO.getBy(topic); }
 
 }
