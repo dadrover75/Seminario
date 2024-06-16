@@ -9,34 +9,31 @@ import java.awt.*;
 import java.util.List;
 
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 public class Mosaico extends JPanel {
     private JTable table;
     private DefaultTableModel tableModel;
-    private JRadioButton bomba;
+    private JToggleButton bomba;
 
     public Mosaico(List<Dispositivo> dispositivos) {
         this.tableModel = new DefaultTableModel();
         this.tableModel.addColumn("Sensor");
         this.tableModel.addColumn("Valor");
         this.table = new JTable(tableModel);
-        this.bomba = new JRadioButton("Riego");
+        this.bomba = new JToggleButton("Riego Off");
 
         // Establecer el formato
         this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         this.setBackground(Color.lightGray);
-
         table.setPreferredScrollableViewportSize(new Dimension(300, 60));
         table.setShowGrid(false);
+
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
         table.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
         table.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
         bomba.setHorizontalAlignment(SwingConstants.CENTER);
+        bomba.setFont(new Font("Sanserif", Font.BOLD, 16));
+        bomba.setBackground(Color.lightGray);
 
         // Agregar los dispositivos a la tabla
         for (Dispositivo dispositivo : dispositivos) {
@@ -44,12 +41,16 @@ public class Mosaico extends JPanel {
             tableModel.addRow(rowData);
         }
 
-        this.setLayout(new GridLayout(0, 1));
-        this.add(table);
-        this.add(bomba);
+        JScrollPane scrollPane = new JScrollPane(table);
+        this.setLayout(new BorderLayout());
+        this.add(scrollPane, BorderLayout.CENTER);
+        this.add(bomba, BorderLayout.SOUTH);
+
+        // Redondear las esquinas del mosaico
+        setOpaque(false);
 
         bomba.setAlignmentX(Component.CENTER_ALIGNMENT);
-
+        bomba.addActionListener(e -> togglePumpState());
 
         this.setVisible(true);
     }
@@ -63,84 +64,39 @@ public class Mosaico extends JPanel {
         }
     }
 
-
     public void updatePumpState(String topic, int nuevoEstado) {
         Boolean estado = nuevoEstado == 1;
         bomba.setSelected(estado);
         if (estado) {
             bomba.setForeground(Color.red);
+            bomba.setText("Riego On");
+            bomba.setBackground(Color.lightGray);
         } else {
             bomba.setForeground(Color.black);
+            bomba.setText("Riego Off");
+            bomba.setBackground(Color.lightGray);
         }
     }
-}
 
-
-/*
-import ControlRiego.Controller.ControlRiegoControl;
-import GestionRecursos.Model.Dispositivo.Ent.Dispositivo;
-
-import javax.swing.*;
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-public class Mosaico extends JPanel {
-    //private int idCultivo;
-    //private List<Dispositivo> dispositivos;
-    private JList<String> sensores;
-    private JRadioButton bomba;
-    private DefaultListModel<String> sensoresModel;
-    private Map<String, Integer> sensorValues;
-
-
-    public Mosaico(List<Dispositivo> dispositivos) {
-        //this.controlRiegoControl = controlRiegoControl;
-        this.sensorValues = new HashMap<>();
-        this.sensoresModel = new DefaultListModel<>();
-
-        // Inicializar los componentes
-        this.sensores = new JList<>(sensoresModel);
-        this.bomba = new JRadioButton("Bomba");
-
-        // Establecer el formato
-        this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Añade margen alrededor del mosaico
-        this.setBackground(Color.lightGray); // Establece el color de fondo del mosaico
-
-        // Establece el color del texto de la bomba cuando está seleccionada
-        bomba.setForeground(Color.red); // Cambia el color del texto de la bomba cuando está seleccionada
-
-        // Configurar el layout y agregar los componentes al panel contenedor
-        this.setLayout(new BorderLayout());
-        this.add(new JScrollPane(sensores), BorderLayout.CENTER);
-        this.add(bomba, BorderLayout.SOUTH);
-        this.setVisible(true);
-
-        // Iniciar la lista de sensores
-        for (Dispositivo dispositivo : dispositivos) {
-            sensorValues.put(dispositivo.getTopic(), null);
-            sensoresModel.addElement(dispositivo.getTopic() + " ---------- " + "N/A");
+    private void togglePumpState() {
+        if (bomba.isSelected()) {
+            bomba.setForeground(Color.red);
+            bomba.setText("Riego On");
+            bomba.setBackground(Color.lightGray);
+        } else {
+            bomba.setForeground(Color.black);
+            bomba.setText("Riego Off");
+            bomba.setBackground(Color.lightGray);
         }
-
-
+        // Aquí puedes agregar la lógica para enviar un mensaje MQTT si es necesario
     }
 
-    public void updateSensorValue(String topic, int humidity) {
-        sensorValues.put(topic, humidity);
-        updateSensorList();
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setColor(getBackground());
+        g2.fillRoundRect(0, 0, getWidth(), getHeight(), 20, 20);
     }
-
-    public void updatePumpState(String topic, int nuevoEstado) {
-        bomba.setSelected(nuevoEstado == 1);
-    }
-
-    private void updateSensorList() {
-        sensoresModel.clear();
-        sensorValues.forEach((topic, value) -> sensoresModel.addElement(topic + " ---------- " + value));
-    }
-
 }
-*/
-

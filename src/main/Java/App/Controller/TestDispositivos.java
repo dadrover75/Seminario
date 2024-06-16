@@ -1,13 +1,17 @@
 package App.Controller;
 
 import Comunication.ConnMQTT.IMqttConnection;
-import org.eclipse.paho.client.mqttv3.MqttException;
+import Comunication.ConnBD.DataBaseConnection;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class TestDispositivos {
+    // Array de topics para simular dispositivos
     private static final String[] TOPICS = {
             "sensor/humidity/1",
             "sensor/humidity/2",
@@ -25,15 +29,25 @@ public class TestDispositivos {
     }
 
     public void startSendingMessages() {
-        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(TOPICS.length);
+        // Asegurarse de que las bombas comiencen apagadas
+        String sql = "UPDATE dispositivos SET estado = 0 WHERE topic LIKE '%actuator/waterpump/%'";
+        try (Connection conn = DataBaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.executeUpdate();
+            System.out.println("Todas las bombas han sido apagadas.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
+        // Iniciar el envío de mensajes simulados
+        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(TOPICS.length);
         for (String topic : TOPICS) {
             executorService.scheduleAtFixedRate(() -> sendRandomHumidity(topic), 0, 10, TimeUnit.SECONDS);
         }
     }
 
     private void sendRandomHumidity(String topic) {
-        int humidity = 15 + random.nextInt(66); // Generates a random number between 15 and 80
+        int humidity = 15 + random.nextInt(66); // ramdom entre 15 y 80
         String message = String.valueOf(humidity);
 
         mqttConnection.publish(topic, message);
