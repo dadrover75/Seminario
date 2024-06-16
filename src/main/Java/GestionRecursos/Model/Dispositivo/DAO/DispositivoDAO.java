@@ -79,6 +79,11 @@ public class  DispositivoDAO implements DAO<Dispositivo> {
 
     }
 
+    @Override
+    public Dispositivo getBy(String topic) {
+        return null;
+    }
+
     public Dispositivo getByTopic(String topic) {
 
         Dispositivo dispositivo = null;
@@ -96,6 +101,57 @@ public class  DispositivoDAO implements DAO<Dispositivo> {
             System.out.println("SQLException: " + ex.getMessage());
         }
         return dispositivo;
+
+    }
+
+    public List<Dispositivo> getAllByCultivo(String topic) {
+
+        List<Dispositivo> dispositivos = new ArrayList<>();
+        String sql = "SELECT d2.* " +
+                "FROM dispositivos d1 " +
+                "JOIN cultivos_dispositivos cd1 ON d1.iddispositivos = cd1.iddispositivos " +
+                "JOIN cultivos c ON cd1.idcultivos = c.idcultivos JOIN cultivos_dispositivos cd2 ON c.idcultivos = cd2.idcultivos " +
+                "JOIN dispositivos d2 ON cd2.iddispositivos = d2.iddispositivos " +
+                "WHERE d1.topic = ?;";
+        try (Connection conn = DataBaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql))
+        {
+            stmt.setString(1, topic);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Dispositivo dispositivo = crearDispositivo(rs);
+                    dispositivos.add(dispositivo);
+                }
+            }
+        } catch (SQLException ex) {
+            System.out.println("SQLException: " + ex.getMessage());
+        }
+        return dispositivos;
+
+    }
+
+    public List<Dispositivo> getAllByCultivoID(int id) {
+
+        List<Dispositivo> dispositivos = new ArrayList<>();
+        String sql = "SELECT d.iddispositivos, d.topic, d.estado " +
+                "FROM dispositivos d " +
+                "JOIN cultivos_dispositivos cd " +
+                "ON d.iddispositivos = cd.iddispositivos " +
+                "WHERE cd.idcultivos = ?;";
+        try (Connection conn = DataBaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql))
+        {
+            stmt.setInt(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Dispositivo dispositivo = crearDispositivo(rs);
+                    dispositivos.add(dispositivo);
+                }
+            }
+        } catch (SQLException ex) {
+            System.out.println("SQLException: " + ex.getMessage());
+        }
+        return dispositivos;
 
     }
 

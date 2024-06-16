@@ -79,6 +79,31 @@ public class CultivoDAO implements DAO<Cultivo> {
 
     }
 
+    @Override
+    public Cultivo getBy(String topic) {
+
+        Cultivo cultivo = null;
+        String sql = "SELECT c.* " +
+                "FROM cultivos c " +
+                "JOIN cultivos_dispositivos cd ON c.idcultivos = cd.idcultivos " +
+                "JOIN dispositivos d ON cd.iddispositivos = d.iddispositivos " +
+                "WHERE d.topic = ?; ";
+        try (Connection conn = DataBaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql))
+        {
+            stmt.setString(1, topic);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    cultivo = crearCultivo(rs);
+                }
+            }
+        } catch (SQLException ex) {
+            System.out.println("SQLException: " + ex.getMessage());
+        }
+        return cultivo;
+
+    }
+
 
     public List<Cultivo> getAll() {
 

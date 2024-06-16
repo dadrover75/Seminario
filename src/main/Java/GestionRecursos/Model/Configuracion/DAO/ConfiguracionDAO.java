@@ -84,6 +84,11 @@ public class ConfiguracionDAO implements DAO<Configuracion> {
 
     }
 
+    @Override
+    public Configuracion getBy(String topic) {
+        return null;
+    }
+
     public List<Configuracion> getAll() {
 
         List<Configuracion> configuraciones = new ArrayList<>();
