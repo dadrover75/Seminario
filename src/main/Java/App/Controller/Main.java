@@ -17,15 +17,16 @@ public class Main {
 
         // Crear una instancia de la conexión MQTT y del la vista y controlador
         MqttSingleton mqttConnection = MqttSingleton.getInstance();
-        MosaicoRiego mosaicoRiego = new MosaicoRiego();
-        ControlRiegoControl controlRiegoControl = new ControlRiegoControl(mqttConnection, mosaicoRiego);
+
+        //MosaicoRiego mosaicoRiego = new MosaicoRiego();
+        ControlRiegoControl controlRiegoControl = new ControlRiegoControl(mqttConnection/*, mosaicoRiego*/);
 
         // Conectar el cliente MQTT y añadir un listener para los mensajes
         mqttConnection.connect();
         mqttConnection.setMessageListener(controlRiegoControl::handleMessage);
 
         // Inicializar la vista y el seteamos el controlador
-        mosaicoRiego.setControlRiegoControl(controlRiegoControl);
+        //mosaicoRiego.setControlRiegoControl(controlRiegoControl);
         controlRiegoControl.initialize();
 
         System.out.println("-----------------------riego en accion--------------------------");

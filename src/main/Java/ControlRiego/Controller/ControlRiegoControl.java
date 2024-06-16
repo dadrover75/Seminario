@@ -2,11 +2,14 @@ package ControlRiego.Controller;
 
 import Comunication.ConnMQTT.IMqttConnection;
 import ControlRiego.Model.ControlRiegoDAO;
+import ControlRiego.View.Mosaico;
 import ControlRiego.View.MosaicoRiego;
 import GestionRecursos.Controller.DispositivoControl;
+import GestionRecursos.Model.Cultivo.Ent.Cultivo;
 import GestionRecursos.Model.Dispositivo.Ent.Dispositivo;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -17,12 +20,17 @@ public class ControlRiegoControl {
     private final IMqttConnection mqttConnection;
     private ControlRiegoDAO controlRiegoDAO = new ControlRiegoDAO();
     private DispositivoControl dispositivoControl = new DispositivoControl();
-    private MosaicoRiego mosaicoRiego;
+    private List<Cultivo> cultivos;
+    private List<Dispositivo> dispositivos;
+    private MosaicoRiego mosaicoRiego = new MosaicoRiego();
+    ///////////////////////////////////// probar mosaico///////////////////////////////////////
+    private List<Dispositivo> dispo = new ArrayList<>(dispositivoControl.listarDispCultivo("sensor/humidity/3"));
+    private Mosaico mosaico = new Mosaico(1, "sensor/humidity/3", 45, dispo);
 
-    public ControlRiegoControl(IMqttConnection mqttConnection, MosaicoRiego mosaicoRiego) {
+    public ControlRiegoControl(IMqttConnection mqttConnection/*, MosaicoRiego mosaicoRiego*/) {
 
         this.mqttConnection = mqttConnection;
-        this.mosaicoRiego = mosaicoRiego;
+        //this.mosaicoRiego = mosaicoRiego;
 
     }
 
@@ -51,7 +59,7 @@ public class ControlRiegoControl {
 
                 // Actualizar la vista con el valor del sensor
                 mosaicoRiego.updateSensorValue(topic, humidity);
-
+                mosaico.updateSensorValue(topic, humidity);
                 // Encender el riego si la humedad es menor a la mínima configurada para el cultivo
                 if (    infoMap.size() != 0 &&
                         humidity < infoMap.get("humedad_min")) {
@@ -74,6 +82,7 @@ public class ControlRiegoControl {
 
                 // Actualizar la vista con el estado de la bomba
                 mosaicoRiego.updatePumpState(topic, nuevoEstado);
+                mosaico.updatePumpState(topic, nuevoEstado);
 
                 // Swith para cambiar el estado de la bomba
                 if (nuevoEstado != estado) {
@@ -130,6 +139,11 @@ public class ControlRiegoControl {
 
         return infoCultivo;
 
+    }
+
+    // Consultar al controlador de dispositivos el cultivo al que pertenece el sensor
+    public List<Dispositivo> listarDispCultivo(String topic) {
+        return dispositivoControl.listarDispCultivo(topic);
     }
 
 }

@@ -36,4 +36,6 @@ public class DispositivoControl {
 
     public void cambiarEstadoBomba(String topic) { dispositivoDAO.cambiarEstadoBomba(topic); }
 
+    public List<Dispositivo> listarDispCultivo(String topic) { return dispositivoDAO.getAllByCultivo(topic); }
+
 }
