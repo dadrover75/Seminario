@@ -46,7 +46,7 @@ public class ContenedorRiego extends JFrame {
 
             // título y tamano del mosaico
             JLabel titleLabel = new JLabel("Cultivo: " + cultivo.getDescripcion());
-            titleLabel.setFont(new Font("Sanserif", Font.BOLD, 20));
+            titleLabel.setFont(new Font("Candara", Font.BOLD, 20));
             titleLabel.setForeground(Color.DARK_GRAY);
             titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
             mosaico.setPreferredSize(new Dimension(300, 200));

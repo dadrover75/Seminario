@@ -22,7 +22,7 @@ public class Mosaico extends JPanel {
         this.bomba = new JToggleButton("Riego Off");
 
         // Establecer el formato
-        this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        this.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
         this.setBackground(Color.lightGray);
         table.setPreferredScrollableViewportSize(new Dimension(300, 60));
         table.setShowGrid(false);
@@ -32,8 +32,7 @@ public class Mosaico extends JPanel {
         table.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
         table.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
         bomba.setHorizontalAlignment(SwingConstants.CENTER);
-        bomba.setFont(new Font("Sanserif", Font.BOLD, 16));
-        bomba.setBackground(Color.lightGray);
+        bomba.setFont(new Font("Candara", Font.BOLD, 14));
 
         // Agregar los dispositivos a la tabla
         for (Dispositivo dispositivo : dispositivos) {
@@ -70,11 +69,9 @@ public class Mosaico extends JPanel {
         if (estado) {
             bomba.setForeground(Color.red);
             bomba.setText("Riego On");
-            bomba.setBackground(Color.lightGray);
         } else {
             bomba.setForeground(Color.black);
             bomba.setText("Riego Off");
-            bomba.setBackground(Color.lightGray);
         }
     }
 
@@ -82,21 +79,19 @@ public class Mosaico extends JPanel {
         if (bomba.isSelected()) {
             bomba.setForeground(Color.red);
             bomba.setText("Riego On");
-            bomba.setBackground(Color.lightGray);
         } else {
             bomba.setForeground(Color.black);
             bomba.setText("Riego Off");
-            bomba.setBackground(Color.lightGray);
         }
-        // Aquí puedes agregar la lógica para enviar un mensaje MQTT si es necesario
     }
 
+    // bordes redondeados ;)
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setColor(getBackground());
-        g2.fillRoundRect(0, 0, getWidth(), getHeight(), 20, 20);
+        g2.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
     }
 }
