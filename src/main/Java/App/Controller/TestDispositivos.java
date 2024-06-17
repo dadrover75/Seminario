@@ -42,7 +42,7 @@ public class TestDispositivos {
         // Iniciar el envío de mensajes simulados
         ScheduledExecutorService executorService = Executors.newScheduledThreadPool(TOPICS.length);
         for (String topic : TOPICS) {
-            executorService.scheduleAtFixedRate(() -> sendRandomHumidity(topic), 0, 10, TimeUnit.SECONDS);
+            executorService.scheduleAtFixedRate(() -> sendRandomHumidity(topic), 0, 15, TimeUnit.SECONDS);
         }
     }
 
