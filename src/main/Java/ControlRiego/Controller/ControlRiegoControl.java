@@ -23,8 +23,7 @@ public class ControlRiegoControl {
     private DispositivoControl dispositivoControl = new DispositivoControl();
     private CultivoControl cultivoControl = new CultivoControl();
     private List<Cultivo> cultivos = cultivoControl.listarCultivo();
-    private List<Dispositivo> dispositivos;
-    private ContenedorRiego contenedorRiego = new ContenedorRiego(cultivos, this);
+    private ContenedorRiego contenedorRiego;
 
     public ControlRiegoControl(IMqttConnection mqttConnection) {
 
@@ -33,18 +32,20 @@ public class ControlRiegoControl {
     }
 
     // Inicializar la vista y el seteamos el controlador
-    public void initialize() {
+    public ContenedorRiego initialize() {
 
-        SwingUtilities.invokeLater(() -> {
             List<Dispositivo> dispositivos = dispositivoControl.listarDispositivo();
             dispositivos.forEach(dispositivo -> mqttConnection.subscribe(dispositivo.getTopic()));
-        });
+            CultivoControl cultivoControl = new CultivoControl();
+            List<Cultivo> cultivos = cultivoControl.listarCultivo();
+            contenedorRiego = new ContenedorRiego(cultivos, this);
+
+        return contenedorRiego;
     }
 
     // Manejar los mensajes recibidos
     public void handleMessage(String topic, MqttMessage message) {
 
-        SwingUtilities.invokeLater(() -> {
             // Obtener el payload del mensaje y la informacion del cultivo
             String payload = new String(message.getPayload());
             Map<String, Integer> infoMap = configCultivo(topic);
@@ -98,13 +99,11 @@ public class ControlRiegoControl {
                     e.printStackTrace();
                 }
             }
-        });
     }
 
     // Enciende la bomba de riego y la apaga después de un tiempo
     private void encenderRiego(String topic) {
 
-        SwingUtilities.invokeLater(() -> {
             int tiempo = configCultivo(topic).get("minutos_riego");
             String topicBomba = controlRiegoDAO.getTopicBomba(topic);
 
@@ -129,20 +128,17 @@ public class ControlRiegoControl {
                     mosaico.updatePumpState(topicBomba, 0);
                 });
             }
-        });
     }
 
     // Apaga la bomba de riego
     private void apagarRiego(String topic) {
 
-        SwingUtilities.invokeLater(() -> {
             if ( dispositivoControl.estadoDispositivo(topic) == 1 ) {
 
                 System.out.println("Se completo el ciclo de riego! \nApagando el riego...");
                 mqttConnection.publish(topic, "0");
                 dispositivoControl.cambiarEstadoBomba(topic);
             }
-        });
     }
 
     // Obtiene la configuración del cultivo segun su sensor

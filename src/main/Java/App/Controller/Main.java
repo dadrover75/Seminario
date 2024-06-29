@@ -43,11 +43,13 @@ public class Main {
                         mqttConnection.connect();
                         mqttConnection.setMessageListener(controlRiegoControl::handleMessage);
 
+                        // Inicializar la vista y el seteamos el controlador
 
-                        // Conectar el cliente MQTT y añadir un listener para los mensajes
-                        CultivoControl cultivoControl = new CultivoControl();
-                        List<Cultivo> cultivos = cultivoControl.listarCultivo();
-                        ContenedorRiego contenedorRiego = new ContenedorRiego(cultivos, controlRiegoControl);
+
+                        // // Conectar el cliente MQTT y añadir un listener para los mensajes
+                        // CultivoControl cultivoControl = new CultivoControl();
+                        // List<Cultivo> cultivos = cultivoControl.listarCultivo();
+                        ContenedorRiego contenedorRiego = controlRiegoControl.initialize();
                         mainView.addTab("Control de Riego", contenedorRiego);
 
                         // Placeholder tabs
@@ -55,8 +57,6 @@ public class Main {
                         mainView.addTab("Control Cámara Frigorífica", new PlaceholderPanel("Control Cámara Frigorífica - Próximamente"));
                         mainView.addTab("Administrador", new PlaceholderPanel("Gestion de recursos - Próximamente"));
 
-                        // Inicializar la vista y el seteamos el controlador
-                        controlRiegoControl.initialize();
 
                         mainView.setVisible(true);
 
