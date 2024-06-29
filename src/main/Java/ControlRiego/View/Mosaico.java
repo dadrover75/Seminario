@@ -45,7 +45,6 @@ public class Mosaico extends JPanel {
         this.add(scrollPane, BorderLayout.CENTER);
         this.add(bomba, BorderLayout.SOUTH);
 
-        // Redondear las esquinas del mosaico
         setOpaque(false);
 
         bomba.setAlignmentX(Component.CENTER_ALIGNMENT);
