@@ -26,7 +26,7 @@ public class ContenedorRiego extends JPanel {
 
         this.add(new JScrollPane(tarjetaCultivos), BorderLayout.CENTER);
 
-        initializeCultivoList(cultivos, controlRiegoControl);
+        SwingUtilities.invokeLater(() -> initializeCultivoList(cultivos, controlRiegoControl));
     }
 
     private void initializeCultivoList(List<Cultivo> cultivos, ControlRiegoControl controlRiegoControl) {

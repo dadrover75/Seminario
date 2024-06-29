@@ -21,7 +21,7 @@ public class Main {
 
         final LoginView[] loginView = {null};
 
-        //SwingUtilities.invokeLater(() -> {
+        SwingUtilities.invokeLater(() -> {
             loginView[0] = new LoginView(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -39,10 +39,12 @@ public class Main {
 
                         // Control Riego setup
                         ControlRiegoControl controlRiegoControl = new ControlRiegoControl(mqttConnection);
-                        // Conectar el cliente MQTT y añadir un listener para los mensajes
+
                         mqttConnection.connect();
                         mqttConnection.setMessageListener(controlRiegoControl::handleMessage);
 
+
+                        // Conectar el cliente MQTT y añadir un listener para los mensajes
                         CultivoControl cultivoControl = new CultivoControl();
                         List<Cultivo> cultivos = cultivoControl.listarCultivo();
                         ContenedorRiego contenedorRiego = new ContenedorRiego(cultivos, controlRiegoControl);
@@ -53,11 +55,12 @@ public class Main {
                         mainView.addTab("Control Cámara Frigorífica", new PlaceholderPanel("Control Cámara Frigorífica - Próximamente"));
                         mainView.addTab("Administrador", new PlaceholderPanel("Gestion de recursos - Próximamente"));
 
+                        // Inicializar la vista y el seteamos el controlador
+                        controlRiegoControl.initialize();
+
                         mainView.setVisible(true);
 
 
-                        // Inicializar la vista y el seteamos el controlador
-                        controlRiegoControl.initialize();
 
                         System.out.println("-----------------------riego en accion--------------------------");
 
@@ -73,7 +76,7 @@ public class Main {
                 }
             });
             loginView[0].setVisible(true);
-        //});
+        });
     }
 }
 

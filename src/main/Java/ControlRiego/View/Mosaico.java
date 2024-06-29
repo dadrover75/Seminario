@@ -54,16 +54,34 @@ public class Mosaico extends JPanel {
     }
 
     public void updateSensorValue(String topic, int humidity) {
+        if (SwingUtilities.isEventDispatchThread()) {
+            doUpdateSensorValue(topic, humidity);
+        } else {
+            SwingUtilities.invokeLater(() -> doUpdateSensorValue(topic, humidity));
+        }
+    }
+
+    private void doUpdateSensorValue(String topic, int humidity) {
         for (int i = 0; i < tableModel.getRowCount(); i++) {
             if (tableModel.getValueAt(i, 0).equals(topic)) {
                 tableModel.setValueAt(humidity + " %", i, 1);
                 break;
             }
         }
+        revalidate();
+        repaint();
     }
 
     public void updatePumpState(String topic, int nuevoEstado) {
-        Boolean estado = nuevoEstado == 1;
+        if (SwingUtilities.isEventDispatchThread()) {
+            doUpdatePumpState(topic, nuevoEstado);
+        } else {
+            SwingUtilities.invokeLater(() -> doUpdatePumpState(topic, nuevoEstado));
+        }
+    }
+
+    private void doUpdatePumpState(String topic, int nuevoEstado) {
+        boolean estado = nuevoEstado == 1;
         bomba.setSelected(estado);
         if (estado) {
             bomba.setForeground(Color.red);
@@ -72,6 +90,8 @@ public class Mosaico extends JPanel {
             bomba.setForeground(Color.black);
             bomba.setText("Riego Off");
         }
+        revalidate();
+        repaint();
     }
 
     private void togglePumpState() {
@@ -83,6 +103,7 @@ public class Mosaico extends JPanel {
             bomba.setText("Riego Off");
         }
     }
+
 
     // bordes redondeados ;)
     @Override
