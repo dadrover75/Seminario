@@ -13,12 +13,13 @@ public class UsuarioDAO implements DAO<Usuario> {
     @Override
     public void insert(Usuario usuario) {
 
-        String sql = "INSERT INTO usuarios (nombre, rol) VALUES (?, ?)";
+        String sql = "INSERT INTO usuarios (nombre, password, rol) VALUES (?,?,?)";
         try (Connection conn = DataBaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql))
         {
             stmt.setString(1, usuario.getNombre());
-            stmt.setString(2, usuario.getRol());
+            stmt.setString(2, usuario.getPassword());
+            stmt.setString(3, usuario.getRol());
             stmt.executeUpdate();
         } catch (SQLException ex) {
             System.out.println("SQLException: " + ex.getMessage());
@@ -29,13 +30,14 @@ public class UsuarioDAO implements DAO<Usuario> {
     @Override
     public void update(Usuario usuario) {
 
-        String sql = "UPDATE usuarios SET nombre = ?, rol = ? WHERE idusuarios = ?";
+        String sql = "UPDATE usuarios SET nombre = ?, password = ?, rol = ? WHERE idusuarios = ?";
         try (Connection conn = DataBaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql))
         {
             stmt.setString(1, usuario.getNombre());
-            stmt.setString(2, usuario.getRol());
-            stmt.setInt(3, usuario.getId());
+            stmt.setString(2, usuario.getPassword());
+            stmt.setString(3, usuario.getRol());
+            stmt.setInt(4, usuario.getId());
             stmt.executeUpdate();
         } catch (SQLException ex) {
             System.out.println("SQLException: " + ex.getMessage());
