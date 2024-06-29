@@ -1,36 +1,55 @@
 package App.Controller;
 
-import Comunication.ConnMQTT.MqttSingleton;
+import App.View.LoginView;
+import App.View.MainView;
+import App.View.PlaceholderPanel;
 import ControlRiego.Controller.ControlRiegoControl;
+import ControlRiego.View.ContenedorRiego;
+import Comunication.ConnMQTT.MqttSingleton;
+import GestionRecursos.Model.Cultivo.Ent.Cultivo;
 
-import java.sql.*;
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.List;
 
 public class Main {
 
     public static void main(String[] args) throws SQLException {
+        SwingUtilities.invokeLater(() -> {
+            final LoginView loginView = new LoginView(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // Simulate login check
+                    String username = loginView.getUsername();
+                    String password = loginView.getPassword();
 
-        // Crear una instancia de la conexión MQTT y del la vista y controlador
-        MqttSingleton mqttConnection = MqttSingleton.getInstance();
+                    if (username.equals("user") && password.equals("pass")) { // Replace with real authentication
+                        loginView.dispose();
 
-        //MosaicoRiego mosaicoRiego = new MosaicoRiego();
-        ControlRiegoControl controlRiegoControl = new ControlRiegoControl(mqttConnection);
+                        MainView mainView = new MainView();
 
-        // Conectar el cliente MQTT y añadir un listener para los mensajes
-        mqttConnection.connect();
-        mqttConnection.setMessageListener(controlRiegoControl::handleMessage);
+                        // Create MQTT connection
+                        MqttSingleton mqttConnection = MqttSingleton.getInstance();
 
-        // Inicializar la vista y el seteamos el controlador
-        controlRiegoControl.initialize();
+                        // Control Riego setup
+                        ControlRiegoControl controlRiegoControl = new ControlRiegoControl(mqttConnection);
+                        List<Cultivo> cultivos = controlRiegoControl.getCultivos();
+                        ContenedorRiego contenedorRiego = new ContenedorRiego(cultivos, controlRiegoControl);
+                        mainView.addTab("Control de Riego", contenedorRiego);
 
-        System.out.println("-----------------------riego en accion--------------------------");
+                        // Placeholder tabs
+                        mainView.addTab("Control de Agua", new PlaceholderPanel("Control de Agua - Próximamente"));
+                        mainView.addTab("Control Cámara Frigorífica", new PlaceholderPanel("Control Cámara Frigorífica - Próximamente"));
 
-        // Iniciar la simulación de dispositivos
-        TestDispositivos testDispositivos = new TestDispositivos(mqttConnection);
-        testDispositivos.startSendingMessages();
-
-        // Añadir un shutdown hook para cerrar la conexión al terminar la aplicación
-        Runtime.getRuntime().addShutdownHook(new Thread(mqttConnection::disconnect));
-
+                        mainView.setVisible(true);
+                    } else {
+                        JOptionPane.showMessageDialog(loginView, "Login failed. Try again.");
+                    }
+                }
+            });
+            loginView.setVisible(true);
+        });
     }
-
 }
