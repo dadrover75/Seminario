@@ -1,5 +1,6 @@
 package App.Controller;
 
+import App.View.ContenedorAdmin;
 import App.View.LoginView;
 import App.View.MainView;
 import App.View.PlaceholderPanel;
@@ -43,24 +44,15 @@ public class Main {
                         mqttConnection.connect();
                         mqttConnection.setMessageListener(controlRiegoControl::handleMessage);
 
-                        // Inicializar la vista y el seteamos el controlador
-
-
-                        // // Conectar el cliente MQTT y añadir un listener para los mensajes
-                        // CultivoControl cultivoControl = new CultivoControl();
-                        // List<Cultivo> cultivos = cultivoControl.listarCultivo();
                         ContenedorRiego contenedorRiego = controlRiegoControl.initialize();
-                        mainView.addTab("Control de Riego", contenedorRiego);
 
-                        // Placeholder tabs
+                        // Tabs
+                        mainView.addTab("Control de Riego", contenedorRiego);
                         mainView.addTab("Control de Agua", new PlaceholderPanel("Control de Agua - Próximamente"));
                         mainView.addTab("Control Cámara Frigorífica", new PlaceholderPanel("Control Cámara Frigorífica - Próximamente"));
-                        mainView.addTab("Administrador", new PlaceholderPanel("Gestion de recursos - Próximamente"));
-
+                        mainView.addTab("Administrador", new ContenedorAdmin());
 
                         mainView.setVisible(true);
-
-
 
                         System.out.println("-----------------------riego en accion--------------------------");
 
@@ -79,30 +71,3 @@ public class Main {
         });
     }
 }
-
-
-        /*
-                // Crear una instancia de la conexión MQTT y del la vista y controlador
-        MqttSingleton mqttConnection = MqttSingleton.getInstance();
-
-        //MosaicoRiego mosaicoRiego = new MosaicoRiego();
-        ControlRiegoControl controlRiegoControl = new ControlRiegoControl(mqttConnection);
-
-        // Conectar el cliente MQTT y añadir un listener para los mensajes
-        mqttConnection.connect();
-        mqttConnection.setMessageListener(controlRiegoControl::handleMessage);
-
-        // Inicializar la vista y el seteamos el controlador
-        controlRiegoControl.initialize();
-
-        System.out.println("-----------------------riego en accion--------------------------");
-
-        // Iniciar la simulación de dispositivos
-        TestDispositivos testDispositivos = new TestDispositivos(mqttConnection);
-        testDispositivos.startSendingMessages();
-
-        // Añadir un shutdown hook para cerrar la conexión al terminar la aplicación
-        Runtime.getRuntime().addShutdownHook(new Thread(mqttConnection::disconnect));
-
-        * */
-

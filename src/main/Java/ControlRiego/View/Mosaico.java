@@ -32,7 +32,7 @@ public class Mosaico extends JPanel {
         table.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
         table.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
         bomba.setHorizontalAlignment(SwingConstants.CENTER);
-        bomba.setFont(new Font("Candara", Font.BOLD, 14));
+        //bomba.setFont(new Font("Candara", Font.BOLD, 14));
 
         // Agregar los dispositivos a la tabla
         for (Dispositivo dispositivo : dispositivos) {
