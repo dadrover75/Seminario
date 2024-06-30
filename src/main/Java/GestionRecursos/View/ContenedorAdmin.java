@@ -1,7 +1,6 @@
 package GestionRecursos.View;
 
 import GestionRecursos.Controller.*;
-import GestionRecursos.Model.*;
 import GestionRecursos.Model.Configuracion.Ent.Configuracion;
 import GestionRecursos.Model.Usuario.Ent.Usuario;
 import GestionRecursos.Model.Cultivo.Ent.Cultivo;
@@ -472,7 +471,7 @@ public class ContenedorAdmin extends JPanel {
         List<Usuario> usuarios = usuarioControl.listarUsuario();
         StringBuilder sb = new StringBuilder();
         for (Usuario usuario : usuarios) {
-            sb.append(usuario.getId()+" - ").append("Nombre: ").append(usuario.getNombre()).append("\n");
+            sb.append(usuario.getId()+" - ").append("Nombre: ").append(usuario.getNombre()).append(", Rol: ").append(usuario.getRol()).append("\n");
         }
         textArea.setText(sb.toString());
     }
@@ -492,7 +491,7 @@ public class ContenedorAdmin extends JPanel {
         List<Cultivo> cultivos = cultivoControl.listarCultivo();
         StringBuilder sb = new StringBuilder();
         for (Cultivo cultivo : cultivos) {
-            sb.append(cultivo.getId()+" - ").append(", Descripción: ").append(cultivo.getDescripcion()).append("\n");
+            sb.append(cultivo.getId()+" - ").append("Descripción: ").append(cultivo.getDescripcion()).append(", Config: ").append(cultivo.getConfiguracion().getId()).append("\n");
         }
         textArea.setText(sb.toString());
     }
@@ -502,7 +501,7 @@ public class ContenedorAdmin extends JPanel {
         List<Configuracion> configuraciones = configuracionControl.listarConfiguracion();
         StringBuilder sb = new StringBuilder();
         for (Configuracion configuracion : configuraciones) {
-            sb.append(configuracion.getId()+" - ").append(", Minutos de Riego: ").append(configuracion.getMinutosRiego())
+            sb.append(configuracion.getId()+" - ").append("Minutos de Riego: ").append(configuracion.getMinutosRiego())
                     .append(", Humedad Máxima: ").append(configuracion.getHumMax()).append(", Humedad Mínima: ").append(configuracion.getHumMin()).append("\n");
         }
         textArea.setText(sb.toString());

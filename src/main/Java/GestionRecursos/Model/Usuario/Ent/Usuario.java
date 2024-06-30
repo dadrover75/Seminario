@@ -1,10 +1,6 @@
 package GestionRecursos.Model.Usuario.Ent;
 
-public class Usuario {
-    private int id;
-    private String nombre;
-    private String password;
-    private String rol;
+public class Usuario extends UsuarioAbs {
 
     public Usuario(int id, String nombre, String password, String rol) {
         this.id = id;
@@ -22,30 +18,37 @@ public class Usuario {
     public Usuario() {
     }
 
+    @Override
     public int getId() {
         return id;
     }
 
+    @Override
     public String getNombre() {
         return nombre;
     }
 
+    @Override
     public String getPassword() {
         return password;
     }
 
+    @Override
     public void setPassword(String password) {
         this.password = password;
     }
 
+    @Override
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
 
+    @Override
     public String getRol() {
         return rol;
     }
 
+    @Override
     public void setRol(String rol) {
         this.rol = rol;
     }
