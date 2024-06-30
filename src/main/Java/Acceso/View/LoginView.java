@@ -1,4 +1,4 @@
-package App.View;
+package Acceso.View;
 
 import javax.swing.*;
 import java.awt.*;

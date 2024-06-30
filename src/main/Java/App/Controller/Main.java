@@ -1,9 +1,9 @@
 package App.Controller;
 
 import GestionRecursos.View.ContenedorAdmin;
-import App.View.LoginView;
+import Acceso.View.LoginView;
 import App.View.MainView;
-import App.View.PlaceholderPanel;
+import ControlAgua.View.PlaceholderPanel;
 import ControlRiego.Controller.ControlRiegoControl;
 import ControlRiego.View.ContenedorRiego;
 import Comunication.ConnMQTT.MqttSingleton;
