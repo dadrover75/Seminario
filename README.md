@@ -71,3 +71,8 @@ La solución se basa en una aplicación Java, utilizando MySQL para la persisten
   Monitoreo y notificaciones en tiempo real.
 - Notificaciones y Alertas:
   Envío de alertas y notificaciones sobre eventos importantes.
+
+  # Prueba MVP
+  ## Credenciales
+  - usuario: user
+  - password: pass
