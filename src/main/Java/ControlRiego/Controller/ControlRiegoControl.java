@@ -34,11 +34,11 @@ public class ControlRiegoControl {
     // Inicializar la vista y el seteamos el controlador
     public ContenedorRiego initialize() {
 
-            List<Dispositivo> dispositivos = dispositivoControl.listarDispositivo();
-            dispositivos.forEach(dispositivo -> mqttConnection.subscribe(dispositivo.getTopic()));
-            CultivoControl cultivoControl = new CultivoControl();
-            List<Cultivo> cultivos = cultivoControl.listarCultivo();
-            contenedorRiego = new ContenedorRiego(cultivos, this);
+        CultivoControl cultivoControl = new CultivoControl();
+        List<Cultivo> cultivos = cultivoControl.listarCultivo();
+        contenedorRiego = new ContenedorRiego(cultivos, this);
+        List<Dispositivo> dispositivos = dispositivoControl.listarDispositivo();
+        dispositivos.forEach(dispositivo -> mqttConnection.subscribe(dispositivo.getTopic()));
 
         return contenedorRiego;
     }

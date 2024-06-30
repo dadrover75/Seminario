@@ -1,20 +1,17 @@
 package App.Controller;
 
-import App.View.ContenedorAdmin;
+import GestionRecursos.View.ContenedorAdmin;
 import App.View.LoginView;
 import App.View.MainView;
 import App.View.PlaceholderPanel;
 import ControlRiego.Controller.ControlRiegoControl;
 import ControlRiego.View.ContenedorRiego;
 import Comunication.ConnMQTT.MqttSingleton;
-import GestionRecursos.Controller.CultivoControl;
-import GestionRecursos.Model.Cultivo.Ent.Cultivo;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
-import java.util.List;
 
 public class Main {
 
